@@ -1,0 +1,246 @@
+@baseUrl = http://localhost:5000
+@studentToken = paste_student_jwt_here
+@adminToken = paste_admin_jwt_here
+@userId = paste_user_id_here
+@companyId = paste_company_id_here
+@jobId = paste_job_id_here
+@applicationId = paste_application_id_here
+@interviewId = paste_interview_id_here
+@resumePath = C:\path\to\resume.pdf
+
+### API health
+GET {{baseUrl}}/
+
+### Register student
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "John Student",
+  "email": "john.student@gmail.com",
+  "password": "123456",
+  "role": "student"
+}
+
+### Register admin
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Placement Admin",
+  "email": "admin@gmail.com",
+  "password": "123456",
+  "role": "admin"
+}
+
+### Login student
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "john.student@gmail.com",
+  "password": "123456"
+}
+
+### Login admin
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@gmail.com",
+  "password": "123456"
+}
+
+### Logout
+POST {{baseUrl}}/api/auth/logout
+
+### Get my profile
+GET {{baseUrl}}/api/users/profile
+Authorization: Bearer {{studentToken}}
+
+### Update my profile
+PUT {{baseUrl}}/api/users/update-profile
+Authorization: Bearer {{studentToken}}
+Content-Type: application/json
+
+{
+  "name": "John Student",
+  "department": "Computer Science",
+  "rollNumber": "CSE001",
+  "phone": "9876543210",
+  "cgpa": 8.4,
+  "backlogs": 0,
+  "skills": ["JavaScript", "React", "Node", "MongoDB"],
+  "graduationYear": 2026
+}
+
+### Get all users - admin
+GET {{baseUrl}}/api/users/get-users
+Authorization: Bearer {{adminToken}}
+
+### Get users by role - admin
+GET {{baseUrl}}/api/users/get-users?role=student
+Authorization: Bearer {{adminToken}}
+
+### Get user by id - admin
+GET {{baseUrl}}/api/users/{{userId}}
+Authorization: Bearer {{adminToken}}
+
+### Add company - admin
+POST {{baseUrl}}/api/companies/add-company
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Acme Tech",
+  "website": "https://acme.example.com",
+  "description": "Product engineering company hiring interns and freshers.",
+  "hiringHistory": [
+    {
+      "year": 2025,
+      "hiredCount": 12,
+      "packageOffered": "12 LPA"
+    }
+  ],
+  "packages": ["8 LPA", "12 LPA", "24 LPA"],
+  "roles": ["MERN Developer Intern", "Software Engineer"]
+}
+
+### Get companies
+GET {{baseUrl}}/api/companies/get-companies
+Authorization: Bearer {{studentToken}}
+
+### Update company - admin
+PUT {{baseUrl}}/api/companies/update-company/{{companyId}}
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "website": "https://careers.acme.example.com",
+  "packages": ["10 LPA", "15 LPA", "24 LPA"],
+  "roles": ["Frontend Developer", "Backend Developer", "MERN Developer Intern"]
+}
+
+### Create job - admin
+POST {{baseUrl}}/api/jobs/create-job
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "title": "MERN Developer Intern",
+  "company": "{{companyId}}",
+  "companyName": "Acme Tech",
+  "description": "Build placement tracker features.",
+  "role": "Intern",
+  "salary": "24 LPA",
+  "location": "Bengaluru",
+  "deadline": "2026-06-30T18:29:59.000Z",
+  "minCgpa": 7,
+  "maxBacklogs": 0,
+  "requiredSkills": ["javascript", "react", "node"],
+  "rounds": ["aptitude", "technical", "hr"],
+  "status": "open"
+}
+
+### Get jobs
+GET {{baseUrl}}/api/jobs/get-jobs
+Authorization: Bearer {{studentToken}}
+
+### Get open jobs
+GET {{baseUrl}}/api/jobs/get-jobs?status=open
+Authorization: Bearer {{studentToken}}
+
+### Get job by id
+GET {{baseUrl}}/api/jobs/{{jobId}}
+Authorization: Bearer {{studentToken}}
+
+### Update job - admin
+PUT {{baseUrl}}/api/jobs/update-job/{{jobId}}
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "salary": "25 LPA",
+  "location": "Hybrid",
+  "requiredSkills": ["javascript", "react", "node", "mongodb"],
+  "status": "open"
+}
+
+### Delete job - admin
+DELETE {{baseUrl}}/api/jobs/delete-job/{{jobId}}
+Authorization: Bearer {{adminToken}}
+
+### Apply for job - student
+POST {{baseUrl}}/api/applications/apply-job
+Authorization: Bearer {{studentToken}}
+Content-Type: application/json
+
+{
+  "jobId": "{{jobId}}"
+}
+
+### Get my applications - student
+GET {{baseUrl}}/api/applications/my-applications
+Authorization: Bearer {{studentToken}}
+
+### Get all applications - admin
+GET {{baseUrl}}/api/applications/get-applications
+Authorization: Bearer {{adminToken}}
+
+### Update application status - admin
+PUT {{baseUrl}}/api/applications/update-status/{{applicationId}}
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "status": "shortlisted",
+  "notes": "Cleared eligibility screening."
+}
+
+### Schedule interview - admin
+POST {{baseUrl}}/api/interviews/schedule-interview
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "applicationId": "{{applicationId}}",
+  "interviewDate": "2026-07-05T10:00:00.000Z",
+  "round": "technical",
+  "feedback": "Bring project portfolio."
+}
+
+### Update interview round - admin
+PUT {{baseUrl}}/api/interviews/update-round/{{interviewId}}
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "round": "hr",
+  "status": "completed",
+  "result": "pass",
+  "feedback": "Good communication and project clarity."
+}
+
+### Get interviews
+GET {{baseUrl}}/api/interviews/get-interviews
+Authorization: Bearer {{studentToken}}
+
+### Get interviews - admin
+GET {{baseUrl}}/api/interviews/get-interviews
+Authorization: Bearer {{adminToken}}
+
+### Upload resume
+POST {{baseUrl}}/api/resumes/upload-resume
+Authorization: Bearer {{studentToken}}
+Content-Type: multipart/form-data; boundary=BoundaryForResume
+
+--BoundaryForResume
+Content-Disposition: form-data; name="resume"; filename="resume.pdf"
+Content-Type: application/pdf
+
+< {{resumePath}}
+--BoundaryForResume--
+
+### Get resume score
+GET {{baseUrl}}/api/resumes/get-resume-score
+Authorization: Bearer {{studentToken}}
