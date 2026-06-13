@@ -6,6 +6,14 @@ const { calculateProfileScore, calculatePlacementScore } = require("../services/
 
 exports.getProfile = async (req, res, next) => {
   try {
+    // Students have profiles, admins don't
+    if (req.user.role === "admin") {
+      return sendResponse(res, 200, "Admin profile fetched", {
+        user: req.user,
+        message: "Admins manage jobs and applications, not student profiles"
+      });
+    }
+
     const latestResume = await Resume.findOne({ student: req.user._id }).sort({ createdAt: -1 });
     const scores = calculatePlacementScore({
       user: req.user,
@@ -24,6 +32,11 @@ exports.getProfile = async (req, res, next) => {
 
 exports.updateProfile = async (req, res, next) => {
   try {
+    // Only students can update profiles
+    if (req.user.role === "admin") {
+      return sendResponse(res, 403, "Admins cannot update student profiles");
+    }
+
     const allowedFields = ["name", "department", "rollNumber", "phone", "cgpa", "backlogs", "skills", "graduationYear"];
     const updates = {};
 

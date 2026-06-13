@@ -226,12 +226,15 @@ function App() {
 
 function AuthScreen({ onAuth, flash, notice }) {
   const [mode, setMode] = useState("login");
-  const [form, setForm] = useState({ name: "", email: "", password: "", role: "student" });
+  const [form, setForm] = useState({ name: "", email: "", password: "", role: "student", companyName: "" });
 
   const submit = async (event) => {
     event.preventDefault();
     try {
-      const path = mode === "login" ? "/auth/login" : "/auth/register";
+      let path = "/auth/login";
+      if (mode === "register") {
+        path = form.role === "admin" ? "/auth/register-company-admin" : "/auth/register";
+      }
       const payload = mode === "login"
         ? { email: form.email, password: form.password }
         : form;
@@ -264,6 +267,9 @@ function AuthScreen({ onAuth, flash, notice }) {
                   <option value="admin">Admin</option>
                 </select>
               </label>
+              {form.role === "admin" && (
+                <label>Company Name<input value={form.companyName} onChange={(e) => setForm({ ...form, companyName: e.target.value })} required /></label>
+              )}
             </>
           )}
           <label>Email<input autoComplete="email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required /></label>
@@ -315,7 +321,6 @@ function Jobs({ jobs, companies, isAdmin, authedApi, reload, flash }) {
         method: "POST",
         body: {
           ...form,
-          company: form.company || undefined,
           requiredSkills: form.requiredSkills,
           rounds: splitList(form.rounds)
         }
@@ -352,11 +357,6 @@ function Jobs({ jobs, companies, isAdmin, authedApi, reload, flash }) {
           <h3>Create job</h3>
           <form onSubmit={saveJob} className="stack-form">
             <input placeholder="Title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required />
-            <input placeholder="Company name" value={form.companyName} onChange={(e) => setForm({ ...form, companyName: e.target.value })} />
-            <select value={form.company || ""} onChange={(e) => setForm({ ...form, company: e.target.value })}>
-              <option value="">Link company record</option>
-              {companies.map((company) => <option key={company._id} value={company._id}>{company.name}</option>)}
-            </select>
             <textarea placeholder="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} required />
             <input placeholder="Role" value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })} />
             <input placeholder="Salary/package" value={form.salary} onChange={(e) => setForm({ ...form, salary: e.target.value })} />
@@ -400,12 +400,12 @@ function Companies({ companies, isAdmin, authedApi, reload, flash }) {
   const saveCompany = async (event) => {
     event.preventDefault();
     try {
-      await authedApi("/companies/add-company", {
-        method: "POST",
+      await authedApi("/companies/update-company", {
+        method: "PUT",
         body: { ...form, packages: splitList(form.packages), roles: splitList(form.roles) }
       });
       setForm({ name: "", website: "", description: "", packages: "", roles: "" });
-      flash("Company added");
+      flash("Company updated");
       reload();
     } catch (error) {
       flash(error.message);
@@ -432,14 +432,14 @@ function Companies({ companies, isAdmin, authedApi, reload, flash }) {
       </section>
       {isAdmin && (
         <section className="panel">
-          <h3>Add company</h3>
+          <h3>Update my company</h3>
           <form onSubmit={saveCompany} className="stack-form">
-            <input placeholder="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
+            <input placeholder="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
             <input placeholder="Website" value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} />
             <textarea placeholder="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
             <input placeholder="Packages, comma separated" value={form.packages} onChange={(e) => setForm({ ...form, packages: e.target.value })} />
             <input placeholder="Roles, comma separated" value={form.roles} onChange={(e) => setForm({ ...form, roles: e.target.value })} />
-            <button type="submit">Add company</button>
+            <button type="submit">Update company</button>
           </form>
         </section>
       )}

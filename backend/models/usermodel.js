@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
     default: "student"
   },
 
+  // For student users
   department: String,
   rollNumber: String,
   phone: String,
@@ -20,6 +21,10 @@ const userSchema = new mongoose.Schema({
   graduationYear: Number,
   resumeUrl: String,
   profileScore: { type: Number, default: 0 },
+
+  // For admin users (company admins)
+  company: { type: mongoose.Schema.Types.ObjectId, ref: "Company" },
+  companyName: String,
 
 }, { timestamps: true });
 
