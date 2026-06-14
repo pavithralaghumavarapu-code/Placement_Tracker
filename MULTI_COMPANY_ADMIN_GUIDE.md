@@ -1,4 +1,4 @@
-# Multi-Company Admin System Implementation Guide
+#PLACEMENT TRACKER- Multi-Company Admin System
 
 ## Overview
 The placement tracker is developed to support multiple companies with independent admin accounts. Each company has its own admin login, and can only see and manage applications for jobs posted by their company.
