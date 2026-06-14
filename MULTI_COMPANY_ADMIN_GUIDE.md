@@ -105,6 +105,48 @@ If you have existing data:
 3. Or create new admin accounts using the new registration endpoint
 4. Existing jobs may need company assignment if they don't have it
 
+Example Scenario
+Setup
+Company A Admin registers → Company A created
+Company B Admin registers → Company B created
+Student 1 registers
+Student 2 registers
+Operations
+Company A Admin posts "Backend Developer" job
+
+Job linked to Company A
+Other companies can't see this job in their dashboard
+Company B Admin posts "Frontend Developer" job
+
+Job linked to Company B
+Other companies can't see this job in their dashboard
+Student 1 browses jobs
+
+Sees BOTH Company A and Company B jobs
+Applies to both
+Company A Admin views applications
+
+Sees ONLY Student 1's application (for Backend job)
+Can't see Student 1's application to Company B
+Company B Admin views applications
+
+Sees ONLY Student 1's application (for Frontend job)
+Can't see Student 1's application to Company A
+Student 1 tracks applications
+
+Sees status of both applications
+Can see which company replied with which status
+
+
+What You Can Do Now
+Multiple Companies: Register and manage as many companies as needed
+Independent Operations: Each company operates completely independently
+Job Posting: Companies post jobs that only they can manage
+Application Screening: Companies see only applications for their jobs
+Candidate Tracking: Companies can accept/reject candidates
+Student Application: Students apply to multiple companies
+Privacy: Complete data isolation between companies
+
 ## Future Enhancements
 
 Potential improvements to consider:
